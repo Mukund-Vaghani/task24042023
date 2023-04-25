@@ -71,7 +71,9 @@
                 url: 'http://localhost:8203/listing',
                 header: { 'Content-Type': 'application/json' },
                 success: (e) => {
-                    // if() show delete button only admin side
+                    // show delete button only admin side
+                    // var checkAdmin = localStorage.getItem('user');
+
                     e.forEach((element, index) => {
                         $("#tbody").append(`<tr><td>${element.id}</td> <td>${element.role}</td> <td>${element.first_name}</td> <td>${element.last_name}</td> <td>${element.email}</td><td>${element.gender}</td><td>${element.password}</td><td><button type="button" onclick='deleteUser(${element.id})'>Delete</button></td></tr>`)
                     });
@@ -80,7 +82,7 @@
         }
 
         function search(search) {
-            console.log(search);
+            // console.log(search);
             $.ajax({
                 type: 'POST',
                 url: 'http://localhost:8203/search',
