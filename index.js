@@ -22,7 +22,8 @@ app.post('/login', (req, res) => {
 
 
 app.post('/search', function (req, res) {
-    // console.log(req.body);
+    // console.log(req.body.token);
+    con.query(`SELECT role FROM tbl_employee WHERE email = '${req.body.token}'`,function(error,  result))
     con.query(`SELECT * FROM tbl_employee WHERE first_name or last_name or email LIKE '%${req.body.search}%'`, function(error,result){
         if(!error && result.length > 0){
             res.send(result)
@@ -63,7 +64,7 @@ app.get('/listing',function(req,res){
 })
 
 app.post('/delete',function(req,res){
-    console.log(req.body);
+    // console.log(req.body);
     // return false;
     con.query(`SELECT role FROM tbl_employee WHERE email = ?`,[req.body.email],function(error,result){
         console.log(result);
@@ -71,7 +72,6 @@ app.post('/delete',function(req,res){
             if(result[0].role == 'admin'){
                 con.query('UPDATE tbl_employee SET is_delete ="1" WHERE ID = "'+req.body.id+'"',function(error,result){
                 if(!error){
-                    // res.render('home.html');
                     res.send('result');
                     console.log('deleted');
                 }else{
