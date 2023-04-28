@@ -9,22 +9,22 @@ app.use(express.json());
 app.post('/login', (req, res) => {
     console.log(req.body);
     var email = req.body.email;
-    var passwd = req.body.password;
+    var passwd = req.body.passwd;
 
     con.query(`SELECT * FROM tbl_employee WHERE email = ? AND password = ?`, [email, passwd], function (error, result) {
-            res.send({ code: '1', message: 'success!', data: { token: btoa(email) } }
+        if(result.length >0){
+            res.send({ code: '1', message: 'success!', data: { token: btoa(email), role: result[0].role} }
             )
+        }else{
+            res.send({code:'0',message:'Invalid credentials'})
+        }
         })
-
 // res.send({ code: 0, message: 'Invalid email or password' });
-
 })
 
 
 app.post('/search', function (req, res) {
-    // console.log(req.body.token);
-    con.query(`SELECT role FROM tbl_employee WHERE email = '${req.body.token}'`,function(error,  result))
-    con.query(`SELECT * FROM tbl_employee WHERE first_name or last_name or email LIKE '%${req.body.search}%'`, function(error,result){
+    con.query(`SELECT * FROM tbl_employee WHERE role = 'employee' AND (first_name LIKE '%${req.body.search}%' or last_name LIKE '%${req.body.search}%' or email LIKE '%${req.body.search}%')`, function(error,result){
         if(!error && result.length > 0){
             res.send(result)
         }else{
@@ -45,15 +45,21 @@ app.post('/signup', (req, res) => {
         password: request.password
     }
 
-    con.query(`INSERT INTO tbl_employee SET ?`, [empData], function (error, result) {
-        if (!error) {
-            res.send({ code: '1', message: 'success!', data: { token: btoa(empData.email) } });
+    con.query(`SELECT * FROM tbl_employee WHERE email = ?`,[req.body.email], function(error,result){
+        if (!error && result.length > 0){
+            res.send({code:'0',message:'email already exist'});
+        }else{
+            con.query(`INSERT INTO tbl_employee SET ?`, [empData], function (error, result) {
+                if (!error) {
+                    res.send({ code: '1', message: 'success!', data: { token: btoa(empData.email) } });
+                }
+            })
         }
     })
 })
 
 app.get('/listing',function(req,res){
-    con.query('SELECT * FROM tbl_employee WHERE is_active = "1" AND is_delete = "0"', function(error,result
+    con.query('SELECT * FROM tbl_employee WHERE role = "employee" AND is_active = "1" AND is_delete = "0"', function(error,result
         ){
         if(!error && result.length > 0){
             res.send(result)

@@ -65,8 +65,6 @@
                     <th>Last Name</th>
                     <th>Email</th>
                     <th>Gender</th>
-                    <th>Password</th>
-                    <th>Action</th>
                 </tr>
             </thead>
             <tbody id="tbody">
@@ -84,24 +82,29 @@
                 url: 'http://localhost:8203/listing',
                 header: { 'Content-Type': 'application/json' },
                 success: (e) => {
-                    // $('#customers').DataTable({
-                    //     data: e,
-                    //     columns: [
-                    //         { data: 'id' },
-                    //         { data: 'role' },
-                    //         { data: 'first_name' },
-                    //         { data: 'last_name' },
-                    //         { data: 'email' },
-                    //         { data: 'gender' },
-                    //         {data: 'password'},
-                    //         {data: [{<button type="button" class="btn btn-danger" onclick='deleteUser(${e.data.id})'>Delete</button>}]}
-                    //     ]
-                    // });
                     var user = localStorage.getItem('user');
                     var id = window.atob(user);
+
+                    // e.forEach((element, index) => {
+                    // if(element.email != id){
+                    //     $('#customers').DataTable({
+                    //         data: element,
+                    //         columns: [
+                    //             { data: 'id' },
+                    //             { data: 'role' },
+                    //             { data: 'first_name' },
+                    //             { data: 'last_name' },
+                    //             { data: 'email' },
+                    //             { data: 'gender' },
+                    //         ]                            
+                    //     })
+                    // }else{
+                    //     return null;
+                    // }
+                    // })
                     e.forEach((element, index) => {
                         if (element.email != id) {
-                            $("#tbody").append(`<tr><td>${element.id}</td> <td>${element.role}</td> <td>${element.first_name}</td> <td>${element.last_name}</td> <td>${element.email}</td><td>${element.gender}</td><td>${element.password}</td><td><button type="button" class="btn btn-danger" onclick='deleteUser(${element.id})'>Delete</button></td></tr>`)
+                            $("#tbody").append(`<tr><td>${element.id}</td> <td>${element.role}</td> <td>${element.first_name}</td> <td>${element.last_name}</td> <td>${element.email}</td><td>${element.gender}</td></tr>`)
                         } else {
                             return null;
                         }
@@ -111,6 +114,7 @@
         }
 
         function search(search) {
+            // console.log(search);
             var token = localStorage.getItem('user');
             var decode = window.atob(token);
             $.ajax({
@@ -124,7 +128,7 @@
                     var id = window.atob(user);
                     e.forEach((element, index) => {
                         if (element.email != id) {
-                            $("#tbody").append(`<tr><td>${element.id}</td> <td>${element.role}</td> <td>${element.first_name}</td> <td>${element.last_name}</td> <td>${element.email}</td><td>${element.gender}</td><td>${element.password}</td><td><button type="button" class="btn btn-danger" onclick='deleteUser(${element.id})'>Delete</button></td></tr>`)
+                            $("#tbody").append(`<tr><td>${element.id}</td> <td>${element.role}</td> <td>${element.first_name}</td> <td>${element.last_name}</td> <td>${element.email}</td><td>${element.gender}</td></tr>`)
                         } else {
                             return null;
                         }
@@ -153,34 +157,19 @@
             });
         }
 
-        function deleteUser(id) {
-            swal({
-                title: "Are you sure?",
-                text: "Once deleted, you will not be able to recover!",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            }).then((willDelete) => {
-                if (willDelete) {
-                    swal("Poof! user has been deleted!", {
-                        icon: "success",
-                    });
-                    var token = localStorage.getItem('user');
-                    var decode = window.atob(token);
-                    $.ajax({
-                        type: 'POST',
-                        url: 'http://localhost:8203/delete',
-                        headers: { 'Content-Type': 'application/json' },
-                        data: JSON.stringify({ id: id, email: decode }),
-                        success: (e) => {
-                            window.location.href = 'home.html'
-                        }
-                    })
-                } else {
-                    swal("Your are safe!");
-                }
-            });
-        }
+        // function deleteUser(id) {
+        //     var token = localStorage.getItem('user');
+        //     var decode = window.atob(token);
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: 'http://localhost:8203/delete',
+        //         headers: { 'Content-Type': 'application/json' },
+        //         data: JSON.stringify({ id: id, email: decode }),
+        //         success: (e) => {
+        //             window.location.href = 'home.html'
+        //         }
+        //     })
+        // }
     </script>
     <script>
         function loadInitial() {
