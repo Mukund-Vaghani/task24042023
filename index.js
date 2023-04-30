@@ -35,7 +35,7 @@ app.post('/search', function (req, res) {
 
 app.post('/signup', (req, res) => {
     var request = req.body;
-
+    console.log(request);
     var empData = {
         role: request.role,
         first_name: request.first_name,

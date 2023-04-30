@@ -30,8 +30,7 @@
 <body onload="loadInitial()">
     <div class="d-flex align-items-center justify-content-center mt-5 ">
         <div class="border border-secondary-subtle p-5">
-            <form id="student_edit_data"
-                onsubmit="validation(); return false, signup(document.getElementById('role').value,document.getElementById('first_name').value,document.getElementById('last_name').value,document.getElementById('email').value,document.getElementById('gender').value, document.getElementById('password').value)">
+            <form id="student_edit_data" onsubmit="return validation()">
                 <h4>signup page</h4>
                 <div class="space_div">
                     <label for="role">Role:</label>
@@ -83,17 +82,29 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
-        $(document).ready(function(){
-
-            $("#student_edit_data").submit(function(e){
-                e.preventDefault();
-            });
-
-        });
 
 
-        async function signup(role, first_name, last_name, email, gender, password) {
-            
+        student_edit_data.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // console.log(validation());
+            var flag = validation();
+            if (flag) {
+                const form = document.getElementById('student_edit_data');
+                const formdata = new FormData(form);
+                var role = formdata.get('role');
+                var first_name = formdata.get("first_name");
+                var last_name = formdata.get("last_name");
+                var email = formdata.get('email');
+                var password = formdata.get('password');
+                var gender = formdata.get('gender');
+                signup(role, first_name, last_name, email, password, gender);
+            } else {
+                swal('oops!', 'you filled some wrong detail in form', 'warning');
+            }
+        })
+
+        const signup = async (role, first_name, last_name, email, password, gender) => {
+            console.log("enter in signup");
             $.ajax({
                 type: 'POST',
                 url: 'http://localhost:8203/signup',
@@ -126,118 +137,70 @@
             }
         }
 
-        // function validation() {
-        //     event.preventDefault()
-
-        //     let userEmail = document.getElementById('email');
-        //     let userPassword = document.getElementById('password');
-        //     let firstName = document.getElementById('first_name');
-        //     let lastName = document.getElementById('last_name');
-
-        //     let spanE = document.getElementById('spanEname');
-        //     let spanP = document.getElementById('spanPassword');
-        //     let spanF = document.getElementById('spanFname');
-        //     let spanL = document.getElementById('spanLname');
-
-        //     let eregex = /^\S+@\S+\.\S+$/;
-        //     let pregex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-
-        //     if (firstName.value == "") {
-        //         spanF.innerText = `Pls Fill First Name`;
-        //         return false;
-        //     }
-        //     else {
-        //         spanF.innerText = "";
-        //     }
-
-        //     if (lastName.value == "") {
-        //         spanL.innerText = `Pls Fill Last Name`;
-        //         return false;
-        //     }
-        //     else {
-        //         spanL.innerText = "";
-        //     }
-
-        //     if (userEmail.value == "") {
-        //         spanE.innerText = `Pls Fill Email-Address`;
-        //         return false;
-        //     }
-        //     else if (!eregex.test(userEmail.value)) {
-        //         console.log('mkddfd');
-        //         spanE.innerText = 'pls Enter Valid Email';
-        //         // alert("called");
-        //         return false;
-        //     }
-        //     else {
-        //         spanE.innerText = "";
-        //     }
-
-        //     if (userPassword.value == "") {
-        //         spanP.innerText = `Pls Fill Password`;
-        //         return false;
-        //     }
-        //     else if (!pregex.test(userPassword.value)) {
-        //         spanP.innerText = 'pls Match the pattern';
-        //         return false;
-        //     }
-        //     else {
-        //         spanP.innerText = "";
-        //     }
-        // }
-
         function validation() {
-  event.preventDefault();
+            event.preventDefault();
+            var status = false;
 
-  let userEmail = document.getElementById('email');
-  let userPassword = document.getElementById('password');
-  let firstName = document.getElementById('first_name');
-  let lastName = document.getElementById('last_name');
+            let userEmail = document.getElementById('email');
+            let userPassword = document.getElementById('password');
+            let firstName = document.getElementById('first_name');
+            let lastName = document.getElementById('last_name');
 
-  let spanE = document.getElementById('spanEname');
-  let spanP = document.getElementById('spanPassword');
-  let spanF = document.getElementById('spanFname');
-  let spanL = document.getElementById('spanLname');
+            let spanE = document.getElementById('spanEname');
+            let spanP = document.getElementById('spanPassword');
+            let spanF = document.getElementById('spanFname');
+            let spanL = document.getElementById('spanLname');
 
-  let eregex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//   let pregex = /^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-\[\]{}<>,./`~();:'"_+=|\\])/;
-// let eregex = /^\S+@\S+\.\S+$/;
-let pregex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+            let eregex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            //   let pregex = /^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-\[\]{}<>,./`~();:'"_+=|\\])/;
+            // let eregex = /^\S+@\S+\.\S+$/;
+            let pregex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
-  if (firstName.value.trim() == "") {
-    spanF.innerText = `Please fill in your first name.`;
-    return false;
-  } else {
-    spanF.innerText = "";
-  }
+            if (firstName.value.trim() == "") {
+                spanF.innerText = `Please fill in your first name.`;
+                // return false;
+                status = false;
+            } else {
+                spanF.innerText = "";
+                status = true;
+            }
 
-  if (lastName.value.trim() == "") {
-    spanL.innerText = `Please fill in your last name.`;
-    return false;
-  } else {
-    spanL.innerText = "";
-  }
+            if (lastName.value.trim() == "") {
+                spanL.innerText = `Please fill in your last name.`;
+                // return false;
+                status = false;
+            } else {
+                spanL.innerText = "";
+                status = true;
+            }
 
-  if (userEmail.value.trim() == "") {
-    spanE.innerText = `Please fill in your email address.`;
-    return false;
-  } else if (!eregex.test(userEmail.value)) {
-    spanE.innerText = 'Please enter a valid email address.';
-    return true;
-  } else {
-    spanE.innerText = "";
-  }
+            if (userEmail.value.trim() == "") {
+                spanE.innerText = `Please fill in your email address.`;
+                // return false;
+                status = false;
+            } else if (!eregex.test(userEmail.value)) {
+                spanE.innerText = 'Please enter a valid email address.';
+                // return false;
+                status = false;
+            } if (eregex.test(userEmail.value)) {
+                spanE.innerText = "";
+            }
 
-  if (userPassword.value.trim() == "") {
-    spanP.innerText = `Please fill in your password.`;
-    return false;
-  } else if (!pregex.test(userPassword.value)) {
-    spanP.innerText = 'Please match the password pattern.';
-    return false;
-  } else {
-    spanP.innerText = "";
-  }
-}
+            else if (userPassword.value.trim() == "") {
+                spanP.innerText = `Please fill in your password.`;
+                // return false;
+                status = false;
+            } else if (!pregex.test(userPassword.value)) {
+                spanP.innerText = 'Please match the password pattern.';
+                // return false;
+                status = false;
+            } else {
+                spanP.innerText = "";
+                // status = true;
+            }
 
+            return status;
+        }
     </script>
 </body>
 
